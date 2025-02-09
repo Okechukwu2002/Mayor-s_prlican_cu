@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit Funds</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 450px;
+            margin-top: 50px;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .btn-deposit {
+            background: #28a745;
+            color: white;
+            transition: 0.3s;
+        }
+        .btn-deposit:hover {
+            background: #218838;
+        }
+        .message {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2 class="text-center">Deposit Funds</h2>
+        <form id="depositForm">
+            <div class="mb-3">
+                <label for="amount" class="form-label">Amount ($)</label>
+                <input type="number" id="amount" name="amount" class="form-control" required min="1">
+            </div>
+            <div class="mb-3">
+                <label for="paymentMethod" class="form-label">Payment Method</label>
+                <select id="paymentMethod" name="paymentMethod" class="form-select" required>
+                    <option value="Bitcoin">Bitcoin</option>
+                    <option value="Ethereum">Ethereum</option>
+                    <option value="Credit Card">Credit Card</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-deposit w-100">Deposit</button>
+        </form>
+        <p class="message text-center mt-3" id="message"></p>
+    </div>
+
+    <script>
+        document.getElementById('depositForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let amount = document.getElementById('amount').value;
+            let method = document.getElementById('paymentMethod').value;
+            let message = document.getElementById('message');
+
+            if (amount <= 0) {
+                message.style.color = 'red';
+                message.textContent = 'Enter a valid amount!';
+                return;
+            }
+
+            fetch('/deposit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: amount, method: method })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    message.style.color = 'green';
+                    message.textContent = `Deposit of $${amount} via ${method} was successful!`;
+                } else {
+                    message.style.color = 'red';
+                    message.textContent = 'Deposit failed! Try again.';
+                }
+            })
+            .catch(error => {
+                message.style.color = 'red';
+                message.textContent = 'An error occurred!';
+                console.error(error);
+            });
+        });
+    </script>
+
+</body>
+</html>

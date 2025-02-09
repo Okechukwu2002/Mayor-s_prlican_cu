@@ -1,0 +1,535 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Bank Transfer Confirmation</title>-->
+<!--    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">-->
+<!--    <style>-->
+<!--        * {-->
+<!--            box-sizing: border-box;-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            font-family: 'Poppins', sans-serif;-->
+<!--        }-->
+
+<!--        body {-->
+<!--            background-color: #f4f7fc;-->
+<!--            display: flex;-->
+<!--            justify-content: center;-->
+<!--            align-items: center;-->
+<!--            min-height: 100vh;-->
+<!--            padding: 20px;-->
+<!--        }-->
+
+<!--        .app-container {-->
+<!--            background: white;-->
+<!--            width: 100%;-->
+<!--            max-width: 400px;-->
+<!--            padding: 20px;-->
+<!--            border-radius: 10px;-->
+<!--            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);-->
+<!--            text-align: center;-->
+<!--            transition: all 0.3s ease-in-out;-->
+<!--        }-->
+
+<!--        .header {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: space-between;-->
+<!--            font-size: 18px;-->
+<!--            font-weight: 600;-->
+<!--            margin-bottom: 15px;-->
+<!--        }-->
+
+<!--        .back-icon {-->
+<!--            cursor: pointer;-->
+<!--            font-size: 24px;-->
+<!--            color: #007bff;-->
+<!--            transition: 0.3s;-->
+<!--        }-->
+
+<!--        .back-icon:hover {-->
+<!--            color: #0056b3;-->
+<!--        }-->
+
+<!--        .input-group {-->
+<!--            margin: 15px 0;-->
+<!--            text-align: left;-->
+<!--        }-->
+
+<!--        .input-group label {-->
+<!--            font-weight: 500;-->
+<!--            display: block;-->
+<!--            margin-bottom: 5px;-->
+<!--        }-->
+
+<!--        .input-group input {-->
+<!--            width: 100%;-->
+<!--            padding: 10px;-->
+<!--            border: 1px solid #ddd;-->
+<!--            border-radius: 5px;-->
+<!--            font-size: 16px;-->
+<!--            outline: none;-->
+<!--            transition: 0.3s;-->
+<!--        }-->
+
+<!--        .input-group input:focus {-->
+<!--            border-color: #007bff;-->
+<!--            box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);-->
+<!--        }-->
+
+<!--        .error {-->
+<!--            display: none;-->
+<!--            color: red;-->
+<!--            font-size: 12px;-->
+<!--        }-->
+
+<!--        .resend-code {-->
+<!--            text-align: center;-->
+<!--            color: #007bff;-->
+<!--            cursor: pointer;-->
+<!--            font-size: 14px;-->
+<!--            margin-top: 10px;-->
+<!--            transition: 0.3s;-->
+<!--        }-->
+
+<!--        .resend-code:hover {-->
+<!--            color: #0056b3;-->
+<!--        }-->
+
+<!--        .btn {-->
+<!--            width: 100%;-->
+<!--            padding: 12px;-->
+<!--            margin-top: 10px;-->
+<!--            background-color: #007bff;-->
+<!--            color: white;-->
+<!--            border: none;-->
+<!--            border-radius: 5px;-->
+<!--            cursor: pointer;-->
+<!--            font-size: 16px;-->
+<!--            font-weight: bold;-->
+<!--            transition: 0.3s;-->
+<!--        }-->
+
+<!--        .btn:disabled {-->
+<!--            background-color: grey;-->
+<!--            cursor: not-allowed;-->
+<!--        }-->
+
+<!--        .btn:hover {-->
+<!--            background-color: #0056b3;-->
+<!--        }-->
+
+<!--        #receipt-container {-->
+<!--            display: none;-->
+<!--            background: white;-->
+<!--            width: 100%;-->
+<!--            max-width: 400px;-->
+<!--            padding: 20px;-->
+<!--            border-radius: 10px;-->
+<!--            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);-->
+<!--            text-align: center;-->
+<!--            transition: all 0.3s ease-in-out;-->
+<!--        }-->
+
+<!--        .receipt-header {-->
+<!--            font-size: 20px;-->
+<!--            font-weight: 600;-->
+<!--            color: green;-->
+<!--            margin-bottom: 15px;-->
+<!--        }-->
+
+<!--        .receipt-details p {-->
+<!--            font-size: 16px;-->
+<!--            margin: 5px 0;-->
+<!--        }-->
+
+<!--        .receipt-id {-->
+<!--            font-weight: bold;-->
+<!--            color: #333;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--    &lt;!&ndash; Confirmation Page &ndash;&gt;-->
+<!--    <div class="app-container" id="confirmation-container">-->
+<!--        <div class="header">-->
+<!--            <span class="back-icon" onclick="goBack()">&#8592;</span>-->
+<!--            <h2>Confirmation</h2>-->
+<!--        </div>-->
+<!--        <div class="content">-->
+<!--            <div class="section-title">Enter the confirmation code sent to your email</div>-->
+<!--            <div class="input-group">-->
+<!--                <label>Confirmation Code</label>-->
+<!--                <input type="text" id="confirmation-code" placeholder="Enter code">-->
+<!--                <span class="error">Required</span>-->
+<!--            </div>-->
+<!--            <p class="resend-code" onclick="resendCode()">Didn't receive code? Send again</p>-->
+<!--            <button class="btn" id="final-transfer" onclick="completeTransfer()" disabled>Transfer</button>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Receipt Page &ndash;&gt;-->
+<!--&lt;!&ndash;    <div id="receipt-container">&ndash;&gt;-->
+<!--&lt;!&ndash;        <h2 class="receipt-header">Transfer Successful!</h2>&ndash;&gt;-->
+<!--&lt;!&ndash;        <div class="receipt-details">&ndash;&gt;-->
+<!--&lt;!&ndash;            <p>Account Number: <span id="receipt-account-number"></span></p>&ndash;&gt;-->
+<!--&lt;!&ndash;            <p>Routing Number: <span id="receipt-routing-number"></span></p>&ndash;&gt;-->
+<!--&lt;!&ndash;            <p>Bank Name: <span id="receipt-bank-name"></span></p>&ndash;&gt;-->
+<!--&lt;!&ndash;            <p>Amount: <span id="receipt-amount"></span></p>&ndash;&gt;-->
+<!--&lt;!&ndash;            <p class="receipt-id">Receipt ID: <span id="receipt-id"></span></p>&ndash;&gt;-->
+<!--&lt;!&ndash;        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;        <button class="btn" onclick="printReceipt()">Print Receipt</button>&ndash;&gt;-->
+<!--&lt;!&ndash;        <a href="{{ url_for('user_dashboard') }}"><button class="btn">Done</button></a>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--     <div id="receipt-container">-->
+<!--        <h2 class="receipt-header">Transfer Successful!</h2>-->
+<!--        <div class="receipt-details">-->
+<!--            <p>Account Number: <span id="account-number-display"></span></p>-->
+<!--            <p>Routing Number: <span id="routing-number-display"></span></p>-->
+<!--            <p>Bank Name: <span id="bank-name-display"></span></p>-->
+<!--&lt;!&ndash;            <p>Amount: <span id="receipt-amount"></span></p>&ndash;&gt;-->
+<!--            <p class="receipt-id">Receipt ID: <span id="receipt-id"></span></p>-->
+<!--        </div>-->
+<!--        <button class="btn" onclick="printReceipt()">Print Receipt</button>-->
+<!--        <a href="{{ url_for('user_dashboard') }}"><button class="btn">Done</button></a>-->
+<!--    </div>-->
+
+<!--&lt;!&ndash;    <script>&ndash;&gt;-->
+<!--&lt;!&ndash;        let receiptData = {};&ndash;&gt;-->
+
+<!--&lt;!&ndash;        document.getElementById('confirmation-code').addEventListener('input', function() {&ndash;&gt;-->
+<!--&lt;!&ndash;            const confirmationCode = document.getElementById('confirmation-code').value;&ndash;&gt;-->
+<!--&lt;!&ndash;            const finalTransferButton = document.getElementById('final-transfer');&ndash;&gt;-->
+
+<!--&lt;!&ndash;            finalTransferButton.disabled = confirmationCode !== '1234';&ndash;&gt;-->
+<!--&lt;!&ndash;        });&ndash;&gt;-->
+
+<!--&lt;!&ndash;        function resendCode() {&ndash;&gt;-->
+<!--&lt;!&ndash;            alert("A new code has been sent to your email.");&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+
+<!--&lt;!&ndash;        function completeTransfer() {&ndash;&gt;-->
+<!--&lt;!&ndash;            document.getElementById('confirmation-container').style.display = 'none';&ndash;&gt;-->
+<!--&lt;!&ndash;            document.getElementById('receipt-container').style.display = 'block';&ndash;&gt;-->
+
+<!--&lt;!&ndash;            receiptData.accountNumber = "123456789";&ndash;&gt;-->
+<!--&lt;!&ndash;            receiptData.routingNumber = "987654321";&ndash;&gt;-->
+<!--&lt;!&ndash;            receiptData.bankName = "Sample Bank";&ndash;&gt;-->
+<!--&lt;!&ndash;            receiptData.amount = "500.00";&ndash;&gt;-->
+
+<!--&lt;!&ndash;            document.getElementById('receipt-account-number').textContent = receiptData.accountNumber;&ndash;&gt;-->
+<!--&lt;!&ndash;            document.getElementById('receipt-routing-number').textContent = receiptData.routingNumber;&ndash;&gt;-->
+<!--&lt;!&ndash;            document.getElementById('receipt-bank-name').textContent = receiptData.bankName;&ndash;&gt;-->
+<!--&lt;!&ndash;            document.getElementById('receipt-amount').textContent = "$" + receiptData.amount;&ndash;&gt;-->
+<!--&lt;!&ndash;            document.getElementById('receipt-id').textContent = Math.floor(Math.random() * 1000000);&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+
+<!--&lt;!&ndash;        function printReceipt() {&ndash;&gt;-->
+<!--&lt;!&ndash;            window.print();&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+
+<!--&lt;!&ndash;        function goBack() {&ndash;&gt;-->
+<!--&lt;!&ndash;            window.history.back();&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+<!--&lt;!&ndash;    </script>&ndash;&gt;-->
+
+
+<!--<script>-->
+<!--        // Retrieve the transfer details from localStorage-->
+<!--        const accountNumber = localStorage.getItem('accountNumber');-->
+<!--        const routingNumber = localStorage.getItem('routingNumber');-->
+<!--        const bankName = localStorage.getItem('bankName');-->
+
+<!--        // Display the transfer details-->
+<!--        document.getElementById('account-number-display').textContent = `Account Number: ${accountNumber}`;-->
+<!--        document.getElementById('routing-number-display').textContent = `Routing Number: ${routingNumber}`;-->
+<!--        document.getElementById('bank-name-display').textContent = `Bank Name: ${bankName}`;-->
+
+<!--        // Enable the transfer button when a valid confirmation code is entered-->
+<!--        document.getElementById('confirmation-code').addEventListener('input', function() {-->
+<!--            const confirmationCode = document.getElementById('confirmation-code').value;-->
+<!--            const finalTransferButton = document.getElementById('final-transfer');-->
+
+<!--            finalTransferButton.disabled = confirmationCode !== '1234';-->
+<!--        });-->
+
+<!--        function completeTransfer() {-->
+<!--            // Hide the confirmation section and show the receipt-->
+<!--            document.getElementById('receipt-container').style.display = 'block';-->
+<!--            document.getElementById('account-number-display').style.display = 'none';-->
+<!--            document.getElementById('routing-number-display').style.display = 'none';-->
+<!--            document.getElementById('bank-name-display').style.display = 'none';-->
+
+<!--            // Populate the receipt with details-->
+<!--            document.getElementById('receipt-account-number').textContent = accountNumber;-->
+<!--            document.getElementById('receipt-routing-number').textContent = routingNumber;-->
+<!--            document.getElementById('receipt-bank-name').textContent = bankName;-->
+<!--            document.getElementById('receipt-id').textContent = Math.floor(Math.random() * 1000000);-->
+<!--        }-->
+
+<!--        function printReceipt() {-->
+<!--            window.print();-->
+<!--        }-->
+<!--    </script>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Transfer Confirmation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f4f7fc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            background: white;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .back-icon {
+            cursor: pointer;
+            font-size: 24px;
+            color: #007bff;
+            transition: 0.3s;
+        }
+
+        .back-icon:hover {
+            color: #0056b3;
+        }
+
+        .input-group {
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .input-group label {
+            font-weight: 500;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #007bff;
+            box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+        }
+
+        .error {
+            display: none;
+            color: red;
+            font-size: 12px;
+        }
+
+        .resend-code {
+            text-align: center;
+            color: #007bff;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        .resend-code:hover {
+            color: #0056b3;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn:disabled {
+            background-color: grey;
+            cursor: not-allowed;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        #receipt-container {
+            display: none;
+            background: white;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .receipt-header {
+            font-size: 20px;
+            font-weight: 600;
+            color: green;
+            margin-bottom: 15px;
+        }
+
+        .receipt-details p {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+
+        .receipt-id {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Confirmation Page -->
+    <div class="app-container" id="confirmation-container">
+        <div class="header">
+            <span class="back-icon" onclick="goBack()">&#8592;</span>
+            <h2>Confirmation</h2>
+        </div>
+        <div class="content">
+            <div class="section-title">Enter the confirmation code sent to your email</div>
+            <div class="input-group">
+                <label>Confirmation Code</label>
+                <input type="text" id="confirmation-code" placeholder="Enter code">
+                <span class="error">Required</span>
+            </div>
+            <p class="resend-code" onclick="resendCode()">Didn't receive code? Send again</p>
+            <button class="btn" id="final-transfer" onclick="completeTransfer()" disabled>Transfer</button>
+        </div>
+    </div>
+
+    <!-- Receipt Page -->
+    <div id="receipt-container">
+        <h2 class="receipt-header">Transfer Successful!</h2>
+        <div class="receipt-details">
+            <p>Account Number: <span id="account-number-display"></span></p>
+            <p>Routing Number: <span id="routing-number-display"></span></p>
+            <p>Bank Name: <span id="bank-name-display"></span></p>
+            <p>Amount: <span id="amount-display"></span></p>
+            <p class="receipt-id">Receipt ID: <span id="receipt-id"></span></p>
+        </div>
+        <button class="btn" onclick="printReceipt()">Print Receipt</button>
+        <a href="{{ url_for('user_dashboard') }}"><button class="btn">Done</button></a>
+    </div>
+
+    <script>
+        // Retrieve the transfer details from localStorage
+        const accountNumber = localStorage.getItem('accountNumber');
+        const routingNumber = localStorage.getItem('routingNumber');
+        const bankName = localStorage.getItem('bankName');
+        const amount = localStorage.getItem('amount');
+
+
+        // Display the transfer details
+        if (accountNumber && routingNumber && bankName) {
+            document.getElementById('account-number-display').textContent = ` ${accountNumber}`;
+            document.getElementById('routing-number-display').textContent = ` ${routingNumber}`;
+            document.getElementById('amount-display').textContent = ` ${amount}`;
+            document.getElementById('bank-name-display').textContent = ` ${bankName}`;
+        } else {
+            console.log('Transfer details not found in localStorage.');
+        }
+
+        // Enable the transfer button when a valid confirmation code is entered
+        document.getElementById('confirmation-code').addEventListener('input', function() {
+            const confirmationCode = document.getElementById('confirmation-code').value;
+            const finalTransferButton = document.getElementById('final-transfer');
+            finalTransferButton.disabled = confirmationCode !== '1234';
+        });
+
+        function completeTransfer() {
+            // Hide the confirmation section and show the receipt
+            document.getElementById('confirmation-container').style.display = 'none';
+            document.getElementById('receipt-container').style.display = 'block';
+
+            // Populate the receipt with details
+            document.getElementById('receipt-id').textContent = Math.floor(Math.random() * 1000000);
+        }
+
+        function printReceipt() {
+            window.print();
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function resendCode() {
+            alert("A new code has been sent to your email.");
+        }
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
