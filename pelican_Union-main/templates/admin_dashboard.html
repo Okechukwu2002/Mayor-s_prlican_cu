@@ -1,3 +1,1124 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Admin Dashboard</title>-->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">-->
+<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #1e1e2f;-->
+<!--            color: #ffffff;-->
+<!--            font-family: Arial, sans-serif;-->
+<!--        }-->
+<!--        .sidebar {-->
+<!--            width: 250px;-->
+<!--            height: 100vh;-->
+<!--            background: #161625;-->
+<!--            padding: 20px;-->
+<!--            position: fixed;-->
+<!--        }-->
+<!--        .sidebar a {-->
+<!--            display: block;-->
+<!--            color: white;-->
+<!--            padding: 10px;-->
+<!--            text-decoration: none;-->
+<!--            margin-bottom: 10px;-->
+<!--            transition: 0.3s;-->
+<!--        }-->
+<!--        .sidebar a:hover {-->
+<!--            background: #2a2a3d;-->
+<!--        }-->
+<!--        .content {-->
+<!--            margin-left: 260px;-->
+<!--            padding: 20px;-->
+<!--        }-->
+<!--        .card {-->
+<!--            background: #2a2a3d;-->
+<!--            border: none;-->
+<!--            color: white;-->
+<!--        }-->
+<!--        .table {-->
+<!--            color: white;-->
+<!--        }-->
+<!--        .btn-custom {-->
+<!--            background-color: #ff4b5c;-->
+<!--            color: white;-->
+<!--        }-->
+<!--        .btn-custom:hover {-->
+<!--            background-color: #ff6b7a;-->
+<!--        }-->
+<!--        .modal-content {-->
+<!--            background-color: #2a2a3d;-->
+<!--            color: white;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <div class="sidebar">-->
+<!--        <h3>Admin Panel</h3>-->
+<!--        <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>-->
+<!--        <a href="{{ url_for('get_users') }}">Users</a>-->
+<!--        <a href="{{ url_for('get_transactions') }}">Transactions</a>-->
+<!--        <a href="{{ url_for('admin_dashboard') }}">Settings</a>-->
+<!--        <a href="{{ url_for('admin_logout') }}">Logout</a>-->
+<!--    </div>-->
+
+<!--    <div class="content">-->
+<!--        <h1>Welcome, Admin</h1>-->
+<!--        <div id="users-content">-->
+<!--            <h2>Manage Users</h2>-->
+<!--            <table class="table">-->
+<!--                <thead>-->
+<!--                    <tr>-->
+<!--                        <th>ID</th>-->
+<!--                        <th>Full Name</th>-->
+<!--                        <th>Username</th>-->
+<!--                        <th>Email</th>-->
+<!--                        <th>Balance</th>-->
+<!--                        <th>Actions</th>-->
+<!--                    </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                    {% for user in users %}-->
+<!--                        <tr>-->
+<!--                            <td>{{ user.id }}</td>-->
+<!--&lt;!&ndash;                            <td>{{ user.fullname }}</td>&ndash;&gt;-->
+<!--                            <td>{{ user.username }}</td>-->
+<!--                            <td>{{ user.email }}</td>-->
+<!--                            <td>{{ user.balance }}</td>-->
+<!--                            <td>-->
+<!--                                <button class="btn btn-warning" onclick="editUser({{ user.id }}, '{{ user.username }}', '{{ user.email }}', '{{ user.balance }}')">Edit</button>-->
+<!--                                <button class="btn btn-danger" onclick="confirmDelete({{ user.id }})">Delete</button>-->
+<!--                                <button class="btn btn-info" onclick="confirmFreeze({{ user.id }})">Freeze</button>-->
+<!--                                <button class="btn btn-secondary" onclick="confirmLogout({{ user.id }})">Logout</button>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--                    {% endfor %}-->
+<!--                </tbody>-->
+<!--                <tbody>-->
+<!--        {% for transaction in transactions %}-->
+<!--        <tr>-->
+<!--            <td>{{ transaction.user_name }}</td>-->
+<!--            <td>{{ transaction.account_name }}</td>-->
+<!--            <td>{{ transaction.transaction_amount }}</td>-->
+<!--            <td>{{ transaction.transaction_time }}</td>-->
+<!--        </tr>-->
+<!--        {% endfor %}-->
+<!--    </tbody>-->
+<!--            </table>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Edit User Modal &ndash;&gt;-->
+<!--    <div class="modal fade" id="editUserModal" tabindex="-1">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <h5>Edit User</h5>-->
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>-->
+<!--                </div>-->
+<!--                <div class="modal-body">-->
+<!--                    <form id="edit-user-form" method="POST" action="{{ url_for('edit_user') }}">-->
+<!--                        <input type="hidden" id="edit-user-id" name="id">-->
+<!--&lt;!&ndash;                        <label>Full Name:</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <input type="text" id="edit-fullname" name="fullname" class="form-control" required>&ndash;&gt;-->
+<!--                        <label>Username:</label>-->
+<!--                        <input type="text" id="edit-username" name="username" class="form-control" required>-->
+<!--                        <label>Email:</label>-->
+<!--                        <input type="email" id="edit-email" name="email" class="form-control" required>-->
+<!--                        <label>Balance:</label>-->
+<!--                        <input type="number" id="edit-balance" name="balance" class="form-control" required>-->
+<!--                        <button type="submit" class="btn btn-primary mt-2">Save Changes</button>-->
+<!--                    </form>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <script>-->
+<!--        function editUser(id, username, email, balance) {-->
+<!--            document.getElementById('edit-user-id').value = id;-->
+<!--&lt;!&ndash;            document.getElementById('edit-fullname').value = fullname;&ndash;&gt;-->
+<!--            document.getElementById('edit-username').value = username;-->
+<!--            document.getElementById('edit-email').value = email;-->
+<!--            document.getElementById('edit-balance').value = balance;-->
+<!--            new bootstrap.Modal(document.getElementById('editUserModal')).show();-->
+<!--        }-->
+
+<!--        function confirmDelete(id) {-->
+<!--            if (confirm('Are you sure you want to delete this user?')) {-->
+<!--                fetch(`/delete_user/${id}`, { method: 'DELETE' })-->
+<!--                    .then(() => location.reload());-->
+<!--            }-->
+<!--        }-->
+
+<!--        function confirmFreeze(id) {-->
+<!--            if (confirm('Are you sure you want to freeze this user?')) {-->
+<!--                fetch(`/freeze_user/${id}`, { method: 'POST' })-->
+<!--                    .then(() => location.reload());-->
+<!--            }-->
+<!--        }-->
+
+<!--        function confirmLogout(id) {-->
+<!--            if (confirm('Are you sure you want to log out this user?')) {-->
+<!--                fetch(`/logout_user/${id}`, { method: 'POST' })-->
+<!--                    .then(() => location.reload());-->
+<!--            }-->
+<!--        }-->
+<!--    </script>-->
+
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Admin Dashboard</title>-->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">-->
+<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #1e1e2f;-->
+<!--            color: #ffffff;-->
+<!--            font-family: Arial, sans-serif;-->
+<!--        }-->
+<!--        .sidebar {-->
+<!--            width: 250px;-->
+<!--            height: 100vh;-->
+<!--            background: #161625;-->
+<!--            padding: 20px;-->
+<!--            position: fixed;-->
+<!--            top: 0;-->
+<!--            left: 0;-->
+<!--            overflow-y: auto;-->
+<!--            transition: width 0.3s ease-in-out;-->
+<!--        }-->
+<!--        .sidebar a {-->
+<!--            display: block;-->
+<!--            color: white;-->
+<!--            padding: 10px;-->
+<!--            text-decoration: none;-->
+<!--            margin-bottom: 10px;-->
+<!--            transition: 0.3s;-->
+<!--        }-->
+<!--        .sidebar a:hover {-->
+<!--            background: #2a2a3d;-->
+<!--        }-->
+<!--        .content {-->
+<!--            margin-left: 260px;-->
+<!--            padding: 20px;-->
+<!--            transition: margin-left 0.3s ease-in-out;-->
+<!--        }-->
+<!--        .card {-->
+<!--            background: #2a2a3d;-->
+<!--            border: none;-->
+<!--            color: white;-->
+<!--        }-->
+<!--        .table {-->
+<!--            color: white;-->
+<!--        }-->
+<!--        .btn-custom {-->
+<!--            background-color: #ff4b5c;-->
+<!--            color: white;-->
+<!--        }-->
+<!--        .btn-custom:hover {-->
+<!--            background-color: #ff6b7a;-->
+<!--        }-->
+<!--        .modal-content {-->
+<!--            background-color: #2a2a3d;-->
+<!--            color: white;-->
+<!--        }-->
+<!--        @media (max-width: 768px) {-->
+<!--            .sidebar {-->
+<!--                width: 100px;-->
+<!--            }-->
+<!--            .content {-->
+<!--                margin-left: 110px;-->
+<!--            }-->
+<!--            .sidebar a {-->
+<!--                padding: 5px;-->
+<!--                text-align: center;-->
+<!--            }-->
+<!--            .sidebar a span {-->
+<!--                display: none;-->
+<!--            }-->
+<!--        }-->
+<!--        @media (max-width: 576px) {-->
+<!--            .sidebar {-->
+<!--                width: 70px;-->
+<!--            }-->
+<!--            .content {-->
+<!--                margin-left: 80px;-->
+<!--            }-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <div class="sidebar">-->
+<!--        <h3>Admin Panel</h3>-->
+<!--        <a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>-->
+<!--        <a href="{{ url_for('get_users') }}"><i class="fas fa-users"></i> <span>Users</span></a>-->
+<!--        <a href="{{ url_for('get_transactions') }}"><i class="fas fa-exchange-alt"></i> <span>Transactions</span></a>-->
+<!--        <a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-cogs"></i> <span>Settings</span></a>-->
+<!--        <a href="{{ url_for('admin_logout') }}"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>-->
+<!--    </div>-->
+
+<!--    <div class="content">-->
+<!--        <h1>Welcome, Admin</h1>-->
+<!--        <div id="users-content">-->
+<!--            <h2>Manage Users</h2>-->
+<!--            <div class="table-responsive">-->
+<!--                <table class="table">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <th>ID</th>-->
+<!--                            <th>Username</th>-->
+<!--                            <th>Email</th>-->
+<!--                            <th>Balance</th>-->
+<!--                            <th>Actions</th>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                        {% for user in users %}-->
+<!--                            <tr>-->
+<!--                                <td>{{ user.id }}</td>-->
+<!--                                <td>{{ user.username }}</td>-->
+<!--                                <td>{{ user.email }}</td>-->
+<!--                                <td>{{ user.balance }}</td>-->
+<!--                                <td>-->
+<!--                                    <button class="btn btn-warning" onclick="editUser({{ user.id }}, '{{ user.username }}', '{{ user.email }}', '{{ user.balance }}')">Edit</button>-->
+<!--                                    <button class="btn btn-danger" onclick="confirmDelete({{ user.id }})">Delete</button>-->
+<!--                                    <button class="btn btn-info" onclick="confirmFreeze({{ user.id }})">Freeze</button>-->
+<!--                                    <button class="btn btn-secondary" onclick="confirmLogout({{ user.id }})">Logout</button>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                        {% endfor %}-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div id="transactions-content" class="mt-5">-->
+<!--            <h2>All Transactions</h2>-->
+<!--            <div class="table-responsive">-->
+<!--                <table class="table">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <th>User</th>-->
+<!--                            <th>Account Name</th>-->
+<!--                            <th>Transaction Amount</th>-->
+<!--                            <th>Transaction Time</th>-->
+<!--                            <th>Confirmation Code</th>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                        {% for transaction in transactions %}-->
+<!--                            <tr>-->
+<!--                                <td>{{ transaction.user_name }}</td>-->
+<!--                                <td>{{ transaction.account_name }}</td>-->
+<!--                                <td>{{ transaction.transaction_amount }}</td>-->
+<!--                                <td>{{ transaction.transaction_time }}</td>-->
+<!--                                <td>{{ transaction.confirmation_code }}</td>-->
+<!--                            </tr>-->
+<!--                        {% endfor %}-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Edit User Modal &ndash;&gt;-->
+<!--    <div class="modal fade" id="editUserModal" tabindex="-1">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <h5>Edit User</h5>-->
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>-->
+<!--                </div>-->
+<!--                <div class="modal-body">-->
+<!--                    <form id="edit-user-form" method="POST" action="{{ url_for('edit_user') }}">-->
+<!--                        <input type="hidden" id="edit-user-id" name="id">-->
+<!--                        <label>Username:</label>-->
+<!--                        <input type="text" id="edit-username" name="username" class="form-control" required>-->
+<!--                        <label>Email:</label>-->
+<!--                        <input type="email" id="edit-email" name="email" class="form-control" required>-->
+<!--                        <label>Balance:</label>-->
+<!--                        <input type="number" id="edit-balance" name="balance" class="form-control" required>-->
+<!--                        <button type="submit" class="btn btn-primary mt-2">Save Changes</button>-->
+<!--                    </form>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <script>-->
+<!--        function editUser(id, username, email, balance) {-->
+<!--            document.getElementById('edit-user-id').value = id;-->
+<!--            document.getElementById('edit-username').value = username;-->
+<!--            document.getElementById('edit-email').value = email;-->
+<!--            document.getElementById('edit-balance').value = balance;-->
+<!--            new bootstrap.Modal(document.getElementById('editUserModal')).show();-->
+<!--        }-->
+
+<!--        function confirmDelete(id) {-->
+<!--            if (confirm('Are you sure you want to delete this user?')) {-->
+<!--                fetch(`/delete_user/${id}`, { method: 'DELETE' })-->
+<!--                    .then(() => location.reload());-->
+<!--            }-->
+<!--        }-->
+
+<!--        function confirmFreeze(id) {-->
+<!--            if (confirm('Are you sure you want to freeze this user?')) {-->
+<!--                fetch(`/freeze_user/${id}`, { method: 'POST' })-->
+<!--                    .then(() => location.reload());-->
+<!--            }-->
+<!--        }-->
+
+<!--        function confirmLogout(id) {-->
+<!--            if (confirm('Are you sure you want to log out this user?')) {-->
+<!--                fetch(`/logout_user/${id}`, { method: 'POST' })-->
+<!--                    .then(() => location.reload());-->
+<!--            }-->
+<!--        }-->
+<!--    </script>-->
+
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Admin Dashboard</title>-->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">-->
+<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #1e1e2f;-->
+<!--            color: #ffffff;-->
+<!--            font-family: Arial, sans-serif;-->
+<!--        }-->
+<!--        .sidebar {-->
+<!--            width: 250px;-->
+<!--            height: 100vh;-->
+<!--            background: #161625;-->
+<!--            padding: 20px;-->
+<!--            position: fixed;-->
+<!--            top: 0;-->
+<!--            left: 0;-->
+<!--            overflow-y: auto;-->
+<!--            transition: width 0.3s ease-in-out;-->
+<!--        }-->
+<!--        .sidebar a {-->
+<!--            display: block;-->
+<!--            color: white;-->
+<!--            padding: 10px;-->
+<!--            text-decoration: none;-->
+<!--            margin-bottom: 10px;-->
+<!--            transition: 0.3s;-->
+<!--        }-->
+<!--        .sidebar a:hover {-->
+<!--            background: #2a2a3d;-->
+<!--        }-->
+<!--        .content {-->
+<!--            margin-left: 260px;-->
+<!--            padding: 20px;-->
+<!--            transition: margin-left 0.3s ease-in-out;-->
+<!--        }-->
+<!--        .card {-->
+<!--            background: #2a2a3d;-->
+<!--            border: none;-->
+<!--            color: white;-->
+<!--        }-->
+<!--        .table {-->
+<!--            color: white;-->
+<!--        }-->
+<!--        .btn-custom {-->
+<!--            background-color: #ff4b5c;-->
+<!--            color: white;-->
+<!--        }-->
+<!--        .btn-custom:hover {-->
+<!--            background-color: #ff6b7a;-->
+<!--        }-->
+<!--        .modal-content {-->
+<!--            background-color: #2a2a3d;-->
+<!--            color: white;-->
+<!--        }-->
+<!--        @media (max-width: 768px) {-->
+<!--            .sidebar {-->
+<!--                width: 100px;-->
+<!--            }-->
+<!--            .content {-->
+<!--                margin-left: 110px;-->
+<!--            }-->
+<!--            .sidebar a {-->
+<!--                padding: 5px;-->
+<!--                text-align: center;-->
+<!--            }-->
+<!--            .sidebar a span {-->
+<!--                display: none;-->
+<!--            }-->
+<!--        }-->
+<!--        @media (max-width: 576px) {-->
+<!--            .sidebar {-->
+<!--                width: 70px;-->
+<!--            }-->
+<!--            .content {-->
+<!--                margin-left: 80px;-->
+<!--            }-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <div class="sidebar">-->
+<!--        <h3>Admin Panel</h3>-->
+<!--        <a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>-->
+<!--        <a href="{{ url_for('get_users') }}"><i class="fas fa-users"></i> <span>Users</span></a>-->
+<!--        <a href="{{ url_for('get_transactions') }}"><i class="fas fa-exchange-alt"></i> <span>Transactions</span></a>-->
+<!--        <a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-cogs"></i> <span>Settings</span></a>-->
+<!--        <a href="{{ url_for('admin_logout') }}"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>-->
+<!--    </div>-->
+
+<!--    <div class="content">-->
+<!--        <h1>Welcome, Admin</h1>-->
+<!--        <div id="users-content">-->
+<!--            <h2>Manage Users</h2>-->
+<!--            <div class="table-responsive">-->
+<!--                <table class="table">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <th>ID</th>-->
+<!--                            <th>Username</th>-->
+<!--                            <th>Email</th>-->
+<!--                            <th>Balance</th>-->
+<!--                            <th>Actions</th>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                        {% for user in users %}-->
+<!--                            <tr>-->
+<!--                                <td>{{ user.id }}</td>-->
+<!--                                <td>{{ user.username }}</td>-->
+<!--                                <td>{{ user.email }}</td>-->
+<!--                                <td>{{ user.balance }}</td>-->
+<!--                                <td>-->
+<!--                                    <button class="btn btn-warning" onclick="editUser({{ user.id }}, '{{ user.username }}', '{{ user.email }}', '{{ user.balance }}')">Edit</button>-->
+<!--                                    <button class="btn btn-danger" onclick="confirmDelete({{ user.id }})">Delete</button>-->
+<!--                                    <button class="btn btn-info" onclick="confirmFreeze({{ user.id }})">Freeze</button>-->
+<!--                                    <button class="btn btn-secondary" onclick="confirmLogout({{ user.id }})">Logout</button>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                        {% endfor %}-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div id="transactions-content" class="mt-5">-->
+<!--            <h2>All Transactions</h2>-->
+<!--            <div class="table-responsive">-->
+<!--                <table class="table">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <th>User</th>-->
+<!--                            <th>Account Name</th>-->
+<!--                            <th>Transaction Amount</th>-->
+<!--                            <th>Transaction Time</th>-->
+<!--                            <th>Confirmation Code</th>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                        {% for transaction in transactions %}-->
+<!--                            <tr>-->
+<!--                                <td>{{ transaction.user_name }}</td>-->
+<!--                                <td>{{ transaction.account_name }}</td>-->
+<!--                                <td>{{ transaction.transaction_amount }}</td>-->
+<!--                                <td>{{ transaction.transaction_time }}</td>-->
+<!--                                <td>{{ transaction.confirmation_code }}</td>-->
+<!--                            </tr>-->
+<!--                        {% endfor %}-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Edit User Modal &ndash;&gt;-->
+<!--    <div class="modal fade" id="editUserModal" tabindex="-1">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <h5>Edit User</h5>-->
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>-->
+<!--                </div>-->
+<!--                <div class="modal-body">-->
+<!--                    <form id="edit-user-form" method="POST" action="{{ url_for('edit_user') }}">-->
+<!--                        <input type="hidden" id="edit-user-id" name="id">-->
+<!--                        <label>Username:</label>-->
+<!--                        <input type="text" id="edit-username" name="username" class="form-control" required>-->
+<!--                        <label>Email:</label>-->
+<!--                        <input type="email" id="edit-email" name="email" class="form-control" required>-->
+<!--                        <label>Balance:</label>-->
+<!--                        <input type="number" id="edit-balance" name="balance" class="form-control" required>-->
+<!--                        <button type="submit" class="btn btn-primary mt-2">Save Changes</button>-->
+<!--                    </form>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <script>-->
+<!--        function editUser(id, username, email, balance) {-->
+<!--            document.getElementById('edit-user-id').value = id;-->
+<!--            document.getElementById('edit-username').value = username;-->
+<!--            document.getElementById('edit-email').value = email;-->
+<!--            document.getElementById('edit-balance').value = balance;-->
+<!--            new bootstrap.Modal(document.getElementById('editUserModal')).show();-->
+<!--        }-->
+
+<!--        function confirmDelete(id) {-->
+<!--            if (confirm('Are you sure you want to delete this user?')) {-->
+<!--                fetch(`/delete_user/${id}`, { method: 'DELETE' })-->
+<!--                    .then(response => {-->
+<!--                        if (response.ok) {-->
+<!--                            location.reload();-->
+<!--                        } else {-->
+<!--                            alert('Failed to delete user.');-->
+<!--                        }-->
+<!--                    });-->
+<!--            }-->
+<!--        }-->
+
+<!--        function confirmFreeze(id) {-->
+<!--            if (confirm('Are you sure you want to freeze this user?')) {-->
+<!--                fetch(`/freeze_user/${id}`, { method: 'POST' })-->
+<!--                    .then(response => {-->
+<!--                        if (response.ok) {-->
+<!--                            location.reload();-->
+<!--                        } else {-->
+<!--                            alert('Failed to freeze user.');-->
+<!--                        }-->
+<!--                    });-->
+<!--            }-->
+<!--        }-->
+
+<!--        function confirmLogout(id) {-->
+<!--            if (confirm('Are you sure you want to log out this user?')) {-->
+<!--                fetch(`/logout_user/${id}`, { method: 'POST' })-->
+<!--                    .then(response => {-->
+<!--                        if (response.ok) {-->
+<!--                            location.reload();-->
+<!--                        } else {-->
+<!--                            alert('Failed to log out user.');-->
+<!--                        }-->
+<!--                    });-->
+<!--            }-->
+<!--        }-->
+<!--    </script>-->
+
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Admin Dashboard</title>-->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">-->
+<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #1e1e2f;-->
+<!--            color: #ffffff;-->
+<!--            font-family: Arial, sans-serif;-->
+<!--        }-->
+<!--        .sidebar {-->
+<!--            width: 250px;-->
+<!--            height: 100vh;-->
+<!--            background: #161625;-->
+<!--            padding: 20px;-->
+<!--            position: fixed;-->
+<!--            top: 0;-->
+<!--            left: 0;-->
+<!--            overflow-y: auto;-->
+<!--            transition: width 0.3s ease-in-out;-->
+<!--        }-->
+<!--        .sidebar a {-->
+<!--            display: block;-->
+<!--            color: white;-->
+<!--            padding: 10px;-->
+<!--            text-decoration: none;-->
+<!--            margin-bottom: 10px;-->
+<!--            transition: 0.3s;-->
+<!--        }-->
+<!--        .sidebar a:hover {-->
+<!--            background: #2a2a3d;-->
+<!--        }-->
+<!--        .content {-->
+<!--            margin-left: 260px;-->
+<!--            padding: 20px;-->
+<!--            transition: margin-left 0.3s ease-in-out;-->
+<!--        }-->
+<!--        .card {-->
+<!--            background: #2a2a3d;-->
+<!--            border: none;-->
+<!--            color: white;-->
+<!--        }-->
+<!--        .table {-->
+<!--            color: white;-->
+<!--        }-->
+<!--        .btn-custom {-->
+<!--            background-color: #ff4b5c;-->
+<!--            color: white;-->
+<!--        }-->
+<!--        .btn-custom:hover {-->
+<!--            background-color: #ff6b7a;-->
+<!--        }-->
+<!--        .modal-content {-->
+<!--            background-color: #2a2a3d;-->
+<!--            color: white;-->
+<!--        }-->
+<!--        @media (max-width: 768px) {-->
+<!--            .sidebar {-->
+<!--                width: 100px;-->
+<!--            }-->
+<!--            .content {-->
+<!--                margin-left: 110px;-->
+<!--            }-->
+<!--            .sidebar a {-->
+<!--                padding: 5px;-->
+<!--                text-align: center;-->
+<!--            }-->
+<!--            .sidebar a span {-->
+<!--                display: none;-->
+<!--            }-->
+<!--        }-->
+<!--        @media (max-width: 576px) {-->
+<!--            .sidebar {-->
+<!--                width: 70px;-->
+<!--            }-->
+<!--            .content {-->
+<!--                margin-left: 80px;-->
+<!--            }-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <div class="sidebar">-->
+<!--        <h3>Admin Panel</h3>-->
+<!--        <a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>-->
+<!--        <a href="{{ url_for('get_users') }}"><i class="fas fa-users"></i> <span>Users</span></a>-->
+<!--        <a href="{{ url_for('get_transactions') }}"><i class="fas fa-exchange-alt"></i> <span>Transactions</span></a>-->
+<!--        <a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-cogs"></i> <span>Settings</span></a>-->
+<!--        <a href="{{ url_for('admin_logout') }}"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>-->
+<!--    </div>-->
+
+<!--    <div class="content">-->
+<!--        <h1>Welcome, Admin</h1>-->
+<!--        <div id="users-content">-->
+<!--            <h2>Manage Users</h2>-->
+<!--            <div class="table-responsive">-->
+<!--                <table class="table">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <th>ID</th>-->
+<!--                            <th>Username</th>-->
+<!--                            <th>Email</th>-->
+<!--                            <th>Balance</th>-->
+<!--                            <th>Actions</th>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                        {% for user in users %}-->
+<!--                            <tr>-->
+<!--                                <td>{{ user.id }}</td>-->
+<!--                                <td>{{ user.username }}</td>-->
+<!--                                <td>{{ user.email }}</td>-->
+<!--                                <td>{{ user.balance }}</td>-->
+<!--                                <td>-->
+<!--                                    <button class="btn btn-warning" onclick="editUser({{ user.id }}, '{{ user.username }}', '{{ user.email }}', '{{ user.balance }}')">Edit</button>-->
+<!--                                    <button class="btn btn-danger" onclick="confirmDelete({{ user.id }})">Delete</button>-->
+<!--                                    <button class="btn btn-info" onclick="confirmFreeze({{ user.id }})">Freeze</button>-->
+<!--                                    <button class="btn btn-secondary" onclick="confirmLogout({{ user.id }})">Logout</button>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                        {% endfor %}-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div id="transactions-content" class="mt-5">-->
+<!--            <h2>All Transactions</h2>-->
+<!--            <div class="table-responsive">-->
+<!--                <table class="table">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <th>User</th>-->
+<!--                            <th>Account Name</th>-->
+<!--                            <th>Transaction Amount</th>-->
+<!--                            <th>Transaction Time</th>-->
+<!--                            <th>Confirmation Code</th>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                        {% for transaction in transactions %}-->
+<!--                            <tr>-->
+<!--                                <td>{{ transaction.user_name }}</td>-->
+<!--                                <td>{{ transaction.account_name }}</td>-->
+<!--                                <td>{{ transaction.transaction_amount }}</td>-->
+<!--                                <td>{{ transaction.transaction_time }}</td>-->
+<!--                                <td>{{ transaction.confirmation_code }}</td>-->
+<!--                            </tr>-->
+<!--                        {% endfor %}-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Edit User Modal &ndash;&gt;-->
+<!--    <div class="modal fade" id="editUserModal" tabindex="-1">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <h5>Edit User</h5>-->
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>-->
+<!--                </div>-->
+<!--                <div class="modal-body">-->
+<!--                    <form id="edit-user-form" method="POST" action="{{ url_for('edit_user') }}">-->
+<!--                        <input type="hidden" id="edit-user-id" name="id">-->
+<!--                        <label>Username:</label>-->
+<!--                        <input type="text" id="edit-username" name="username" class="form-control" required>-->
+<!--                        <label>Email:</label>-->
+<!--                        <input type="email" id="edit-email" name="email" class="form-control" required>-->
+<!--                        <label>Balance:</label>-->
+<!--                        <input type="number" id="edit-balance" name="balance" class="form-control" required>-->
+<!--                        <button type="submit" class="btn btn-primary mt-2">Save Changes</button>-->
+<!--                    </form>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <script>-->
+<!--        function editUser(id, username, email, balance) {-->
+<!--            document.getElementById('edit-user-id').value = id;-->
+<!--            document.getElementById('edit-username').value = username;-->
+<!--            document.getElementById('edit-email').value = email;-->
+<!--            document.getElementById('edit-balance').value = balance;-->
+<!--            new bootstrap.Modal(document.getElementById('editUserModal')).show();-->
+<!--        }-->
+
+<!--        function confirmDelete(id) {-->
+<!--            if (confirm('Are you sure you want to delete this user?')) {-->
+<!--                fetch(`/delete_user/${id}`, { method: 'DELETE' })-->
+<!--                    .then(response => {-->
+<!--                        if (response.ok) {-->
+<!--                            location.reload();-->
+<!--                        } else {-->
+<!--                            alert('Failed to delete user.');-->
+<!--                        }-->
+<!--                    });-->
+<!--            }-->
+<!--        }-->
+
+<!--        function confirmFreeze(id) {-->
+<!--            if (confirm('Are you sure you want to freeze this user?')) {-->
+<!--                fetch(`/freeze_user/${id}`, { method: 'POST' })-->
+<!--                    .then(response => {-->
+<!--                        if (response.ok) {-->
+<!--                            location.reload();-->
+<!--                        } else {-->
+<!--                            alert('Failed to freeze user.');-->
+<!--                        }-->
+<!--                    });-->
+<!--            }-->
+<!--        }-->
+
+<!--        function confirmLogout(id) {-->
+<!--            if (confirm('Are you sure you want to log out this user?')) {-->
+<!--                fetch(`/logout_user/${id}`, { method: 'POST' })-->
+<!--                    .then(response => {-->
+<!--                        if (response.ok) {-->
+<!--                            location.reload();-->
+<!--                        } else {-->
+<!--                            alert('Failed to log out user.');-->
+<!--                        }-->
+<!--                    });-->
+<!--            }-->
+<!--        }-->
+<!--    </script>-->
+
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Admin Dashboard</title>-->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">-->
+<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #1e1e2f;-->
+<!--            color: #ffffff;-->
+<!--            font-family: Arial, sans-serif;-->
+<!--        }-->
+<!--        .sidebar {-->
+<!--            width: 250px;-->
+<!--            height: 100vh;-->
+<!--            background: #161625;-->
+<!--            padding: 20px;-->
+<!--            position: fixed;-->
+<!--            top: 0;-->
+<!--            left: 0;-->
+<!--            overflow-y: auto;-->
+<!--            transition: width 0.3s ease-in-out;-->
+<!--        }-->
+<!--        .sidebar a {-->
+<!--            display: block;-->
+<!--            color: white;-->
+<!--            padding: 10px;-->
+<!--            text-decoration: none;-->
+<!--            margin-bottom: 10px;-->
+<!--            transition: 0.3s;-->
+<!--        }-->
+<!--        .sidebar a:hover {-->
+<!--            background: #2a2a3d;-->
+<!--        }-->
+<!--        .content {-->
+<!--            margin-left: 260px;-->
+<!--            padding: 20px;-->
+<!--            transition: margin-left 0.3s ease-in-out;-->
+<!--        }-->
+<!--        .card {-->
+<!--            background: #2a2a3d;-->
+<!--            border: none;-->
+<!--            color: white;-->
+<!--        }-->
+<!--        .table {-->
+<!--            color: white;-->
+<!--        }-->
+<!--        .btn-custom {-->
+<!--            background-color: #ff4b5c;-->
+<!--            color: white;-->
+<!--        }-->
+<!--        .btn-custom:hover {-->
+<!--            background-color: #ff6b7a;-->
+<!--        }-->
+<!--        .modal-content {-->
+<!--            background-color: #2a2a3d;-->
+<!--            color: white;-->
+<!--        }-->
+<!--        @media (max-width: 768px) {-->
+<!--            .sidebar {-->
+<!--                width: 100px;-->
+<!--            }-->
+<!--            .content {-->
+<!--                margin-left: 110px;-->
+<!--            }-->
+<!--            .sidebar a {-->
+<!--                padding: 5px;-->
+<!--                text-align: center;-->
+<!--            }-->
+<!--            .sidebar a span {-->
+<!--                display: none;-->
+<!--            }-->
+<!--        }-->
+<!--        @media (max-width: 576px) {-->
+<!--            .sidebar {-->
+<!--                width: 70px;-->
+<!--            }-->
+<!--            .content {-->
+<!--                margin-left: 80px;-->
+<!--            }-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <div class="sidebar">-->
+<!--        <h3>Admin Panel</h3>-->
+<!--        <a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>-->
+<!--        <a href="{{ url_for('get_users') }}"><i class="fas fa-users"></i> <span>Users</span></a>-->
+<!--        <a href="{{ url_for('get_transactions') }}"><i class="fas fa-exchange-alt"></i> <span>Transactions</span></a>-->
+<!--        <a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-cogs"></i> <span>Settings</span></a>-->
+<!--        <a href="{{ url_for('admin_logout') }}"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>-->
+<!--    </div>-->
+
+<!--    <div class="content">-->
+<!--        <h1>Welcome, Admin</h1>-->
+<!--        <div id="users-content">-->
+<!--            <h2>Manage Users</h2>-->
+<!--            <div class="table-responsive">-->
+<!--                <table class="table">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <th>ID</th>-->
+<!--                            <th>Username</th>-->
+<!--                            <th>Email</th>-->
+<!--                            <th>Balance</th>-->
+<!--                            <th>Actions</th>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                        {% for user in users %}-->
+<!--                            <tr>-->
+<!--                                <td>{{ user.id }}</td>-->
+<!--                                <td>{{ user.username }}</td>-->
+<!--                                <td>{{ user.email }}</td>-->
+<!--                                <td>{{ user.balance }}</td>-->
+<!--                                <td>-->
+<!--                                    <button class="btn btn-warning" onclick="editUser({{ user.id }}, '{{ user.username }}', '{{ user.email }}', '{{ user.balance }}')">Edit</button>-->
+<!--                                    <button class="btn btn-danger" onclick="confirmDelete({{ user.id }})">Delete</button>-->
+<!--                                    <button class="btn btn-info" onclick="confirmFreeze({{ user.id }})">Freeze</button>-->
+<!--                                    <button class="btn btn-secondary" onclick="confirmLogout({{ user.id }})">Logout</button>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                        {% endfor %}-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div id="transactions-content" class="mt-5">-->
+<!--            <h2>All Transactions</h2>-->
+<!--            <div class="table-responsive">-->
+<!--                <table class="table">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <th>User</th>-->
+<!--                            <th>Account Name</th>-->
+<!--                            <th>Transaction Amount</th>-->
+<!--                            <th>Transaction Time</th>-->
+<!--                            <th>Confirmation Code</th>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                        {% for transaction in transactions %}-->
+<!--                            <tr>-->
+<!--                                <td>{{ transaction.user_name }}</td>-->
+<!--                                <td>{{ transaction.account_name }}</td>-->
+<!--                                <td>{{ transaction.transaction_amount }}</td>-->
+<!--                                <td>{{ transaction.transaction_time }}</td>-->
+<!--                                <td>{{ transaction.confirmation_code }}</td>-->
+<!--                            </tr>-->
+<!--                        {% endfor %}-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Edit User Modal &ndash;&gt;-->
+<!--    <div class="modal fade" id="editUserModal" tabindex="-1">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <h5>Edit User</h5>-->
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>-->
+<!--                </div>-->
+<!--                <div class="modal-body">-->
+<!--                    <form id="edit-user-form" method="POST" action="{{ url_for('edit_user') }}">-->
+<!--                        <input type="hidden" id="edit-user-id" name="id">-->
+<!--                        <label>Username:</label>-->
+<!--                        <input type="text" id="edit-username" name="username" class="form-control" required>-->
+<!--                        <label>Email:</label>-->
+<!--                        <input type="email" id="edit-email" name="email" class="form-control" required>-->
+<!--                        <label>Balance:</label>-->
+<!--                        <input type="number" id="edit-balance" name="balance" class="form-control" required>-->
+<!--                        <button type="submit" class="btn btn-primary mt-2">Save Changes</button>-->
+<!--                    </form>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <script>-->
+<!--        function editUser(id, username, email, balance) {-->
+<!--            document.getElementById('edit-user-id').value = id;-->
+<!--            document.getElementById('edit-username').value = username;-->
+<!--            document.getElementById('edit-email').value = email;-->
+<!--            document.getElementById('edit-balance').value = balance;-->
+<!--            new bootstrap.Modal(document.getElementById('editUserModal')).show();-->
+<!--        }-->
+
+<!--        function confirmDelete(id) {-->
+<!--            if (confirm('Are you sure you want to delete this user?')) {-->
+<!--                fetch(`/delete_user/${id}`, { method: 'DELETE' })-->
+<!--                    .then(response => {-->
+<!--                        if (response.ok) {-->
+<!--                            location.reload();-->
+<!--                        } else {-->
+<!--                            alert('Failed to delete user.');-->
+<!--                        }-->
+<!--                    });-->
+<!--            }-->
+<!--        }-->
+
+<!--        function confirmFreeze(id) {-->
+<!--            if (confirm('Are you sure you want to freeze this user?')) {-->
+<!--                fetch(`/freeze_user/${id}`, { method: 'POST' })-->
+<!--                    .then(response => {-->
+<!--                        if (response.ok) {-->
+<!--                            location.reload();-->
+<!--                        } else {-->
+<!--                            alert('Failed to freeze user.');-->
+<!--                        }-->
+<!--                    });-->
+<!--            }-->
+<!--        }-->
+
+<!--        function confirmLogout(id) {-->
+<!--            if (confirm('Are you sure you want to log out this user?')) {-->
+<!--                fetch(`/logout_user/${id}`, { method: 'POST' })-->
+<!--                    .then(response => {-->
+<!--                        if (response.ok) {-->
+<!--                            location.reload();-->
+<!--                        } else {-->
+<!--                            alert('Failed to log out user.');-->
+<!--                        }-->
+<!--                    });-->
+<!--            }-->
+<!--        }-->
+<!--    </script>-->
+
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,6 +1139,10 @@
             background: #161625;
             padding: 20px;
             position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            transition: width 0.3s ease-in-out;
         }
         .sidebar a {
             display: block;
@@ -33,6 +1158,7 @@
         .content {
             margin-left: 260px;
             padding: 20px;
+            transition: margin-left 0.3s ease-in-out;
         }
         .card {
             background: #2a2a3d;
@@ -53,61 +1179,102 @@
             background-color: #2a2a3d;
             color: white;
         }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100px;
+            }
+            .content {
+                margin-left: 110px;
+            }
+            .sidebar a {
+                padding: 5px;
+                text-align: center;
+            }
+            .sidebar a span {
+                display: none;
+            }
+        }
+        @media (max-width: 576px) {
+            .sidebar {
+                width: 70px;
+            }
+            .content {
+                margin-left: 80px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="sidebar">
         <h3>Admin Panel</h3>
-        <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
-        <a href="{{ url_for('get_users') }}">Users</a>
-        <a href="{{ url_for('get_transactions') }}">Transactions</a>
-        <a href="{{ url_for('admin_dashboard') }}">Settings</a>
-        <a href="{{ url_for('admin_logout') }}">Logout</a>
+        <a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+        <a href="{{ url_for('get_users') }}"><i class="fas fa-users"></i> <span>Users</span></a>
+        <a href="{{ url_for('get_transactions') }}"><i class="fas fa-exchange-alt"></i> <span>Transactions</span></a>
+        <a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-cogs"></i> <span>Settings</span></a>
+        <a href="{{ url_for('admin_logout') }}"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
     </div>
 
     <div class="content">
         <h1>Welcome, Admin</h1>
         <div id="users-content">
             <h2>Manage Users</h2>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Full Name</th>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Balance</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in users %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td>{{ user.id }}</td>
-<!--                            <td>{{ user.fullname }}</td>-->
-                            <td>{{ user.username }}</td>
-                            <td>{{ user.email }}</td>
-                            <td>{{ user.balance }}</td>
-                            <td>
-                                <button class="btn btn-warning" onclick="editUser({{ user.id }}, '{{ user.username }}', '{{ user.email }}', '{{ user.balance }}')">Edit</button>
-                                <button class="btn btn-danger" onclick="confirmDelete({{ user.id }})">Delete</button>
-                                <button class="btn btn-info" onclick="confirmFreeze({{ user.id }})">Freeze</button>
-                                <button class="btn btn-secondary" onclick="confirmLogout({{ user.id }})">Logout</button>
-                            </td>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Balance</th>
+                            <th>Actions</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-                <tbody>
-        {% for transaction in transactions %}
-        <tr>
-            <td>{{ transaction.user_name }}</td>
-            <td>{{ transaction.account_name }}</td>
-            <td>{{ transaction.transaction_amount }}</td>
-            <td>{{ transaction.transaction_time }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.balance }}</td>
+                                <td>
+                                    <button class="btn btn-warning" onclick="editUser({{ user.id }}, '{{ user.username }}', '{{ user.email }}', '{{ user.balance }}')">Edit</button>
+                                    <button class="btn btn-danger" onclick="confirmDelete({{ user.id }})">Delete</button>
+                                    <button class="btn btn-info" onclick="confirmFreeze({{ user.id }})">Freeze</button>
+                                    <button class="btn btn-secondary" onclick="confirmLogout({{ user.id }})">Logout</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="transactions-content" class="mt-5">
+            <h2>All Transactions</h2>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Account Name</th>
+                            <th>Transaction Amount</th>
+                            <th>Transaction Time</th>
+                            <th>Confirmation Code</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction in transactions %}
+                            <tr>
+                                <td>{{ transaction.user_name }}</td>
+                                <td>{{ transaction.account_name }}</td>
+                                <td>{{ transaction.transaction_amount }}</td>
+                                <td>{{ transaction.transaction_time }}</td>
+                                <td>{{ transaction.confirmation_code }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -122,8 +1289,6 @@
                 <div class="modal-body">
                     <form id="edit-user-form" method="POST" action="{{ url_for('edit_user') }}">
                         <input type="hidden" id="edit-user-id" name="id">
-<!--                        <label>Full Name:</label>-->
-<!--                        <input type="text" id="edit-fullname" name="fullname" class="form-control" required>-->
                         <label>Username:</label>
                         <input type="text" id="edit-username" name="username" class="form-control" required>
                         <label>Email:</label>
@@ -140,7 +1305,6 @@
     <script>
         function editUser(id, username, email, balance) {
             document.getElementById('edit-user-id').value = id;
-<!--            document.getElementById('edit-fullname').value = fullname;-->
             document.getElementById('edit-username').value = username;
             document.getElementById('edit-email').value = email;
             document.getElementById('edit-balance').value = balance;
@@ -150,21 +1314,39 @@
         function confirmDelete(id) {
             if (confirm('Are you sure you want to delete this user?')) {
                 fetch(`/delete_user/${id}`, { method: 'DELETE' })
-                    .then(() => location.reload());
+                    .then(response => {
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            alert('Failed to delete user.');
+                        }
+                    });
             }
         }
 
         function confirmFreeze(id) {
             if (confirm('Are you sure you want to freeze this user?')) {
                 fetch(`/freeze_user/${id}`, { method: 'POST' })
-                    .then(() => location.reload());
+                    .then(response => {
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            alert('Failed to freeze user.');
+                        }
+                    });
             }
         }
 
         function confirmLogout(id) {
             if (confirm('Are you sure you want to log out this user?')) {
                 fetch(`/logout_user/${id}`, { method: 'POST' })
-                    .then(() => location.reload());
+                    .then(response => {
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            alert('Failed to log out user.');
+                        }
+                    });
             }
         }
     </script>
@@ -172,3 +1354,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
