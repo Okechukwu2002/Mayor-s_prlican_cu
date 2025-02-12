@@ -1,231 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />-->
-<!--    <meta charset="UTF-8">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--    <title>Banking App</title>-->
-<!--    <style>-->
-<!--        body {-->
-<!--            font-family: sans-serif;-->
-<!--            margin: 0;-->
-<!--            background-color: #f0f0f0;-->
-<!--            display: flex;-->
-<!--            justify-content: center;-->
-<!--            min-height: 100vh;-->
-<!--            padding: 0;-->
-<!--        }-->
-
-<!--        .app-container {-->
-<!--            background-color: #fff;-->
-<!--            border-radius: 30px;-->
-<!--            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);-->
-<!--            overflow: hidden;-->
-<!--            width: 350px;-->
-<!--        }-->
-
-<!--        .header {-->
-<!--            background-color: #084547;-->
-<!--            padding-bottom: 77px;-->
-<!--            color: #fff;-->
-<!--            padding-top: 15px;-->
-<!--            padding-right: 15px;-->
-<!--            padding-left: 15px;-->
-<!--            display: flex;-->
-<!--            flex-direction: column;-->
-<!--            justify-content: space-between;-->
-<!--        }-->
-
-<!--        .menu-icon {-->
-<!--            font-size: 20px;-->
-<!--        }-->
-
-<!--        .user-info {-->
-<!--            display: flex;-->
-<!--            justify-content: space-between;-->
-<!--        }-->
-
-<!--        .user-name {-->
-<!--            margin-right: 10px;-->
-<!--        }-->
-
-<!--        .profile-image {-->
-<!--            width: 30px;-->
-<!--            height: 30px;-->
-<!--            border-radius: 50%;-->
-<!--        }-->
-
-<!--        .accounts-section {-->
-<!--            padding: 15px;-->
-<!--            background-color: lightblue;-->
-<!--        }-->
-
-<!--        .account-card {-->
-<!--            background-color: #096063;-->
-<!--            padding: 15px;-->
-<!--            border-radius: 10px;-->
-<!--            margin-bottom: 10px;-->
-<!--            display: flex;-->
-<!--            flex-direction: column;-->
-<!--            gap: 5px;-->
-<!--        }-->
-
-<!--        .view-all-accounts {-->
-<!--            display: flex;-->
-<!--            align-items: center;-->
-<!--            justify-content: center;-->
-<!--        }-->
-
-<!--        .view-all-accounts span {-->
-<!--            margin: 0 5px;-->
-<!--        }-->
-
-<!--        .account-details {}-->
-
-<!--        .account-balance {-->
-<!--            text-align: right;-->
-<!--        }-->
-
-<!--        .actions-section {-->
-<!--            display: flex;-->
-<!--            gap: 5px;-->
-<!--            justify-content: space-around;-->
-<!--        }-->
-
-<!--        .actions-section button {-->
-<!--            background-color: #096063;-->
-<!--            color: #fff;-->
-<!--            border: none;-->
-<!--            border-radius: 5px;-->
-<!--            cursor: pointer;-->
-<!--            display: flex;-->
-<!--            flex-direction: column;-->
-<!--            width: 70px;-->
-<!--            padding-top: 13px;-->
-<!--            margin-top: 30px;-->
-<!--        }-->
-
-<!--        .transactions-section {-->
-<!--            border: 2px solid #d3d6d6;-->
-<!--            padding: 8px;-->
-<!--            background-color: #fff;-->
-<!--            margin-left: 15px;-->
-<!--            margin-right: 15px;-->
-<!--            margin-top: -60px;-->
-<!--            border-radius: 15px;-->
-<!--        }-->
-
-<!--        .transaction {-->
-<!--            display: flex;-->
-<!--            flex-direction: column;-->
-<!--            justify-content: space-between;-->
-<!--            margin-bottom: 10px;-->
-<!--            border-bottom: 1px solid #ddd;-->
-<!--            padding-bottom: 5px;-->
-<!--        }-->
-
-<!--        .see-more {-->
-<!--            text-align: center;-->
-<!--            border-radius: 8px;-->
-<!--            padding-top: 13px;-->
-<!--            padding-bottom: 13px;-->
-<!--            font-weight: 700;-->
-<!--            margin-right: 10px;-->
-<!--            margin-left: 10px;-->
-<!--            margin-top: 150px;-->
-<!--            background-color: #ecebeb;-->
-<!--        }-->
-
-<!--        /* Styles for the icons */-->
-<!--        .actions-section button {-->
-<!--            display: flex;-->
-<!--            align-items: center;-->
-<!--            justify-content: center;-->
-<!--        }-->
-<!--    </style>-->
-<!--</head>-->
-<!--<body>-->
-<!--<div class="app-container">-->
-<!--    <div class="header">-->
-<!--        <div class="menu-icon">☰</div>-->
-<!--        <div class="user-info">-->
-<!--            <h2 class="user-name">Hi, {{ user['username'] }}</h2>-->
-<!--            <img src="{{ url_for('static', filename='uploads/' + profile_picture) }}" alt="User Profile" class="profile-image">-->
-<!--        </div>-->
-<!--        <div style="display: flex; justify-content: space-between; margin-top: -10px;">-->
-<!--            <b>Accounts</b>-->
-<!--            <p>icon</p>-->
-<!--        </div>-->
-<!--        <div class="account-card">-->
-<!--            <div style="display: flex; justify-content: space-between;">-->
-<!--                <b class="account-name">Checking</b>-->
-<!--                <b>${{ user['balance'] }}</b>-->
-<!--            </div>-->
-<!--            <div style="display: flex; justify-content: space-between;">-->
-<!--                <small class="account-number">x1234</small>-->
-<!--                <small class="account-status">Available</small>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <div class="actions-section">-->
-<!--            <a href="transfer">-->
-<!--                <button>-->
-<!--                    <div style="width: 100%;">-->
-<!--                        <i class="fa-solid fa-arrow-right-arrow-left"></i>-->
-<!--                        <p>Transfer</p>-->
-<!--                    </div>-->
-<!--                </button>-->
-<!--            </a>-->
-<!--            <a href="{{ url_for('deposit') }}">-->
-<!--                <button>-->
-<!--                    <div style="width: 100%;">-->
-<!--                        <i class="fa-solid fa-arrow-right-arrow-left"></i>-->
-<!--                        <p>Deposit</p>-->
-<!--                    </div>-->
-<!--                </button>-->
-<!--            </a>-->
-<!--            <a href="{{ url_for('transfer') }}">-->
-<!--                <button>-->
-<!--                    <div style="width: 100%;">-->
-<!--                        <i class="fa-solid fa-arrow-right-arrow-left"></i>-->
-<!--                        <p>Pay</p>-->
-<!--                    </div>-->
-<!--                </button>-->
-<!--            </a>-->
-<!--            <a href="https://apps.apple.com/app/id1085770229">-->
-<!--                <button>-->
-<!--                    <div style="width: 100%;">-->
-<!--                        <i class="fa-solid fa-arrow-right-arrow-left"></i>-->
-<!--                        <p>Message</p>-->
-<!--                    </div>-->
-<!--                </button>-->
-<!--            </a>-->
-<!--        </div>-->
-<!--    </div>-->
-
-<!--    <div class="transactions-section">-->
-<!--        <div style="display: flex; justify-content: space-between;">-->
-<!--            <h2><b>Transactions</b></h2>-->
-<!--            <p>Icon</p>-->
-<!--        </div>-->
-<!--        {% for transaction in transactions %}-->
-<!--        <div class="transaction">-->
-<!--            <div style="display: flex; justify-content: space-between;">-->
-<!--                <b>{{ transaction['account_name'] }}</b>-->
-<!--                <b>${{ transaction['transaction_amount'] }}</b>-->
-<!--            </div>-->
-<!--            <span class="transaction-date">{{ transaction['transaction_time'] }}</span>-->
-<!--        </div>-->
-<!--        {% endfor %}-->
-<!--        <div class="see-more">-->
-<!--            <span>See more...</span>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-<!--</body>-->
-<!--</html>-->
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -365,17 +137,98 @@
             background-color: #ecebeb;
         }
 
-        /* Styles for the icons */
-        .actions-section button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* Messaging styles */
+        .messages-section {
+            margin: 20px;
         }
 
-        @media (min-width: 768px) {
-            .app-container {
-                max-width: 600px;
-            }
+        .message {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+
+        .message p {
+            margin: 0;
+        }
+
+        .message .timestamp {
+            font-size: 12px;
+            color: grey;
+        }
+
+        .send-message {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        .send-message input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .send-message button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .send-message button:hover {
+            background-color: #0056b3;
+        }
+
+        .badge {
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 5px 10px;
+            font-size: 12px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -389,7 +242,7 @@
         </div>
         <div style="display: flex; justify-content: space-between; margin-top: -10px;">
             <b>Accounts</b>
-            <b>• • •</b>
+            <b>...</b>
         </div>
         <div class="account-card">
             <div style="display: flex; justify-content: space-between;">
@@ -426,11 +279,14 @@
                     </div>
                 </button>
             </a>
-            <a href="https://apps.apple.com/app/id1085770229">
+            <a href="#" onclick="openMessages()">
                 <button>
-                    <div style="width: 100%;">
-                        <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                    <div style="width: 100%; position: relative;">
+                        <i class="fa-solid fa-envelope"></i>
                         <p>Message</p>
+                        {% if new_messages %}
+                            <span class="badge">{{ new_messages }}</span>
+                        {% endif %}
                     </div>
                 </button>
             </a>
@@ -440,7 +296,7 @@
     <div class="transactions-section">
         <div style="display: flex; justify-content: space-between;">
             <h2><b>Transactions</b></h2>
-            <b>• • •</b>
+            <b>...</b>
         </div>
         {% for transaction in transactions %}
         <div class="transaction">
@@ -456,5 +312,44 @@
         </div>
     </div>
 </div>
+
+<!-- Modal for messages -->
+<div id="messageModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeMessages()">&times;</span>
+        <h2>Messages</h2>
+        <div class="messages-section">
+            <div class="message-list">
+                {% for message in messages %}
+                <div class="message">
+                    <p>{{ message['message'] }}</p>
+                    <p class="timestamp">{{ message['timestamp'] }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            <form class="send-message" method="post" action="{{ url_for('send_message') }}">
+                <input type="text" name="message" placeholder="Type your message" required>
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openMessages() {
+        document.getElementById('messageModal').style.display = 'block';
+    }
+
+    function closeMessages() {
+        document.getElementById('messageModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('messageModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+</script>
 </body>
 </html>
