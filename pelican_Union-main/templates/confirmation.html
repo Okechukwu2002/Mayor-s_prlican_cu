@@ -968,13 +968,26 @@
         </div>
         <div class="content">
             <div class="section-title">Enter the confirmation code sent to your email</div>
-            <div class="input-group">
-                <label>Confirmation Code</label>
-                <input type="text" id="confirmation-code" placeholder="Enter code">
-                <span class="error">Required</span>
+
+            <form id="confirmation-form" method="post" action="{{ url_for('confirmation') }}">
+                <div class="input-group">
+                    <label>Confirmation Code</label>
+                    <input type="text" id="confirmation-code" name="confirmation_code" placeholder="Enter code" required>
+                    <span class="error">Required</span>
+                </div>
+                <p class="resend-code" onclick="resendCode()">Didn't receive code? Send again</p>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
             </div>
-            <p class="resend-code" onclick="resendCode()">Didn't receive code? Send again</p>
-            <button class="btn" id="final-transfer" onclick="completeTransfer()" disabled>Transfer</button>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+                <button type="submit" class="btn" id="final-transfer">Transfer</button>
+            </form>
         </div>
     </div>
 
@@ -1004,44 +1017,9 @@
             document.getElementById('account-number-display').textContent = accountNumber;
             document.getElementById('routing-number-display').textContent = routingNumber;
             document.getElementById('amount-display').textContent = amount;
-            document.getElementById('bank-name-display').textContent = bankName;
-        } else {
+            document.getElementById('bank-name-display').textContent = bankName;}
+        else {
             console.log('Transfer details not found in localStorage.');
-        }
-
-        // Enable the transfer button when a valid confirmation code is entered
-        document.getElementById('confirmation-code').addEventListener('input', function() {
-            const confirmationCode = document.getElementById('confirmation-code').value;
-            const finalTransferButton = document.getElementById('final-transfer');
-            finalTransferButton.disabled = confirmationCode.length === 0;
-        });
-
-        function completeTransfer() {
-            const confirmationCode = document.getElementById('confirmation-code').value;
-
-            fetch('/complete_transfer', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ confirmation_code: confirmationCode })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Hide the confirmation section and show the receipt
-                    document.getElementById('confirmation-container').style.display = 'none';
-                    document.getElementById('receipt-container').style.display = 'block';
-
-                    // Populate the receipt with details
-                    document.getElementById('receipt-id').textContent = data.receipt_id;
-                } else {
-                    alert('Transfer failed: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
         }
 
         function printReceipt() {
@@ -1059,3 +1037,8 @@
 
 </body>
 </html>
+
+
+
+
+
