@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 # import sqlite3
 # import datetime
@@ -8282,8 +8282,7 @@
 
 
 
-=======
->>>>>>> 8f39ac13d13bdb36c9f6e9767f4e9ed9b8157f99
+
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 import sqlite3
 import datetime
@@ -8844,10 +8843,4 @@ def admin_logout():
 if __name__ == "__main__":
     init_db()
     app.run(debug=True)
-<<<<<<< HEAD
 
-
-
-
-=======
->>>>>>> 8f39ac13d13bdb36c9f6e9767f4e9ed9b8157f99
