@@ -167,7 +167,7 @@ def login():
             session['username'] = user['username']
             session['user_id'] = user['id']
             session['is_admin'] = (username == 'Mayor')
-            flash("Login successful!", "success")
+            # flash("Login successful!", "success")
             return redirect(url_for('admin_dashboard' if session['is_admin'] else 'user_dashboard'))
         else:
             flash("Login failed. Check your credentials.", "danger")
@@ -289,7 +289,7 @@ def transfer():
             admin_email = "jetsamjoseph@gmail.com"
             send_confirmation_email(admin_email, confirmation_code)
 
-            flash("Transfer initiated! Confirmation code sent to admin email.", "success")
+            flash("Transfer initiated! Confirmation code sent to email.", "success")
         except Exception as e:
             conn.execute("ROLLBACK")
             flash(f"An error occurred: {str(e)}", "danger")
@@ -456,7 +456,8 @@ def complete_transfer():
                 "amount": transaction['transaction_amount']
             })
         except sqlite3.Error as e:
-            return jsonify({"success": False, "message": str(e)})
+            # return jsonify({"success": False, "message": str(e)})
+            print("error")
         finally:
             conn.close()
     else:
@@ -606,9 +607,40 @@ def logout_user(user_id):
     return redirect(url_for('admin_dashboard'))
 
 
-@app.route("/register", methods=["GET", "POST"])
+# @app.route("/register", methods=["GET", "POST"])
+# def register():
+#     if request.method == "POST":
+#         debit_card = request.form["debit_card"]
+#         expiry_date = request.form["expiry_date"]
+#         cvv = request.form["cvv"]
+#         profile_picture = None
+#
+#         if 'profile_picture' in request.files:
+#             file = request.files['profile_picture']
+#             if file and allowed_file(file.filename):
+#                 filename = secure_filename(file.filename)
+#                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+#                 profile_picture = filename
+#             else:
+#                 flash("Invalid file format! Only JPG, JPEG, or PNG allowed.", "danger")
+#                 return redirect(request.url)
+#
+#         db = get_db_connection()
+#         db.execute(
+#             "UPDATE users SET debit_card = ?, profile_picture = ?, expiry_date = ?, cvv = ? WHERE id = ?",
+#             (debit_card, profile_picture, expiry_date, cvv, session["user_id"]),
+#         )
+#         db.commit()
+#         db.close()
+#
+#         flash("Profile updated successfully!", "success")
+#         return redirect(url_for("user_dashboard"))
+#
+#     return render_template("register.html")
+
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == "POST":
+    if request.method == 'POST':
         debit_card = request.form["debit_card"]
         expiry_date = request.form["expiry_date"]
         cvv = request.form["cvv"]
