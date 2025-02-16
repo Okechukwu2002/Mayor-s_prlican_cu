@@ -1217,16 +1217,7 @@
                     <span class="error">Required</span>
                 </div>
                 <p class="resend-code" onclick="resendCode()">Didn't receive code? Send again</p>
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-                {% endwith %}
+                
                 <button type="submit" class="btn" id="final-transfer">Transfer</button>
             </form>
 
