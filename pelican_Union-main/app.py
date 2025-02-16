@@ -1,7 +1,3 @@
-
-
-
-
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 import sqlite3
 import datetime
@@ -135,12 +131,23 @@ def signup():
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
+        profile_picture = None
+
+        if 'profile_picture' in request.files:
+            file = request.files['profile_picture']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                profile_picture = filename
+            else:
+                flash("Invalid file format! Only JPG, JPEG, or PNG allowed.", "danger")
+                return redirect(request.url)
 
         hashed_password = generate_password_hash(password)
 
         db = get_db_connection()
-        db.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
-                   (username, email, hashed_password))
+        db.execute("INSERT INTO users (username, email, password, profile_picture) VALUES (?, ?, ?, ?)",
+                   (username, email, hashed_password, profile_picture))
         db.commit()
         db.close()
         flash("Signup successful! Please log in.", "success")
@@ -160,14 +167,10 @@ def login():
         db.close()
 
         if user and check_password_hash(user['password'], password):
-            if user['is_frozen']:
-                flash("Account is frozen. Please contact admin.", "danger")
-                return redirect(url_for('login'))
 
             session['username'] = user['username']
             session['user_id'] = user['id']
             session['is_admin'] = (username == 'Mayor')
-            # flash("Login successful!", "success")
             return redirect(url_for('admin_dashboard' if session['is_admin'] else 'user_dashboard'))
         else:
             flash("Login failed. Check your credentials.", "danger")
@@ -185,7 +188,7 @@ def user_dashboard():
     conn = get_db_connection()
 
     try:
-        user = conn.execute("SELECT id, username, balance, profile_picture FROM users WHERE id = ?",
+        user = conn.execute("SELECT id, username, balance, profile_picture, is_frozen FROM users WHERE id = ?",
                             (user_id,)).fetchone()
 
         if not user:
@@ -259,6 +262,15 @@ def transfer():
     if 'user_id' not in session:
         flash("Please log in to make a transfer.", "danger")
         return redirect(url_for('login'))
+
+    user_id = session['user_id']
+    conn = get_db_connection()
+    user = conn.execute("SELECT is_frozen FROM users WHERE id = ?", (user_id,)).fetchone()
+    conn.close()
+
+    if user['is_frozen']:
+        flash("Account is frozen. You cannot make transfers. Please contact Customer Care by sending a message", "danger")
+        return redirect(url_for('user_dashboard'))
 
     if request.method == 'POST':
         sender_id = session['user_id']
@@ -463,7 +475,6 @@ def complete_transfer():
     else:
         return jsonify({"success": False, "message": "Request must be JSON"})
 
-
 @app.route('/admin_dashboard')
 def admin_dashboard():
     if 'username' not in session or not session.get('is_admin'):
@@ -529,6 +540,24 @@ def get_transactions():
     return jsonify([dict(transaction) for transaction in transactions])
 
 
+@app.route('/freeze_user/<int:user_id>', methods=['POST'])
+def freeze_user(user_id):
+    conn = get_db_connection()
+    user = conn.execute('SELECT is_frozen FROM users WHERE id = ?', (user_id,)).fetchone()
+
+    if not user:
+        flash("User not found.", "danger")
+        return redirect(url_for('admin_dashboard'))
+
+    new_status = 0 if user['is_frozen'] else 1
+    conn.execute('UPDATE users SET is_frozen = ? WHERE id = ?', (new_status, user_id))
+    conn.commit()
+    conn.close()
+
+    status = "unfrozen" if new_status == 0 else "frozen"
+    flash(f"User has been {status}.", "success")
+    return redirect(url_for('admin_dashboard'))
+
 @app.route("/get_users")
 def get_users():
     connection = sqlite3.connect('pbank.db')
@@ -580,20 +609,22 @@ def edit_user():
     return redirect(url_for('admin_dashboard'))
 
 
-@app.route('/freeze_user/<int:user_id>', methods=['POST'])
-def freeze_user(user_id):
-    if 'username' not in session or not session.get('is_admin'):
-        return redirect(url_for('login'))
+@app.route('/edit_transaction', methods=['POST'])
+def edit_transaction():
+    transaction_id = request.form['id']
+    account_name = request.form['account_name']
+    account_number = request.form['account_number']
+    routing_number = request.form['routing_number']
+    transaction_amount = float(request.form['transaction_amount'])
+    bank_name = request.form['bank_name']
 
     conn = get_db_connection()
-    user = conn.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
-    new_status = 0 if user['is_frozen'] else 1
-    conn.execute("UPDATE users SET is_frozen = ? WHERE id = ?", (new_status, user_id))
+    conn.execute('UPDATE transactions SET account_name=?, account_number=?, routing_number=?, transaction_amount=?, bank_name=? WHERE id=?',
+                 (account_name, account_number, routing_number, transaction_amount, bank_name, transaction_id))
     conn.commit()
     conn.close()
 
-    status_text = "frozen" if new_status == 1 else "unfrozen"
-    flash(f"User {user['username']} has been {status_text}.", "info")
+    flash("Transaction updated successfully.", "success")
     return redirect(url_for('admin_dashboard'))
 
 
@@ -682,4 +713,3 @@ def admin_logout():
 if __name__ == "__main__":
     init_db()
     app.run(debug=True)
-
